@@ -54,7 +54,7 @@ struct PuglInternalsImpl {
 	HWND     hwnd;
 	HDC      hdc;
 	HGLRC    hglrc;
-	WNDCLASS wc;
+	WNDCLASSEX wc;
 };
 
 LRESULT CALLBACK
@@ -120,17 +120,16 @@ puglCreateWindow(PuglView* view, const char* title)
 		title = "Window";
 	}
 
-	WNDCLASSEX wc;
-	memset(&wc, 0, sizeof(wc));
-	wc.cbSize        = sizeof(wc);
-	wc.style         = CS_OWNDC;
-	wc.lpfnWndProc   = wndProc;
-	wc.hInstance     = GetModuleHandle(NULL);
-	wc.hIcon         = LoadIcon(NULL, IDI_APPLICATION); // TODO: user-specified icon
-	wc.hCursor       = LoadCursor(NULL, IDC_ARROW);
-	wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
-	wc.lpszClassName = view->windowClass ? view->windowClass : DEFAULT_CLASSNAME;
-	if (!RegisterClassEx(&wc)) {
+	memset(&impl->wc, 0, sizeof(impl->wc));
+	impl->wc.cbSize        = sizeof(impl->wc);
+	impl->wc.style         = CS_OWNDC;
+	impl->wc.lpfnWndProc   = wndProc;
+	impl->wc.hInstance     = GetModuleHandle(NULL);
+	impl->wc.hIcon         = LoadIcon(NULL, IDI_APPLICATION); // TODO: user-specified icon
+	impl->wc.hCursor       = LoadCursor(NULL, IDC_ARROW);
+	impl->wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
+	impl->wc.lpszClassName = view->windowClass ? view->windowClass : DEFAULT_CLASSNAME;
+	if (!RegisterClassEx(&impl->wc)) {
 		free((void*)impl->wc.lpszClassName);
 		free(impl);
 		free(view);
@@ -155,7 +154,7 @@ puglCreateWindow(PuglView* view, const char* title)
 
 	impl->hwnd = CreateWindowEx(
 		WS_EX_TOPMOST,
-		wc.lpszClassName, title,
+		impl->wc.lpszClassName, title,
 		(view->parent ? WS_CHILD : winFlags),
 		CW_USEDEFAULT, CW_USEDEFAULT, wr.right-wr.left, wr.bottom-wr.top,
 		(HWND)view->parent, NULL, NULL, NULL);
