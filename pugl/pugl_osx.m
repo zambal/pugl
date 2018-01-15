@@ -148,6 +148,7 @@ struct PuglInternalsImpl {
 		NSOpenGLPFAAccelerated,
 		NSOpenGLPFAColorSize, 32,
 		NSOpenGLPFADepthSize, 32,
+		NSOpenGLPFAStencilSize, 8,
 		0
 	};
 
