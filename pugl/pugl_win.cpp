@@ -183,6 +183,7 @@ puglCreateWindow(PuglView* view, const char* title)
 	pfd.iPixelType = PFD_TYPE_RGBA;
 	pfd.cColorBits = 24;
 	pfd.cDepthBits = 16;
+	pfd.cStencilBits = 8;
 	pfd.iLayerType = PFD_MAIN_PLANE;
 
 	int format = ChoosePixelFormat(impl->hdc, &pfd);
