@@ -236,7 +236,6 @@ puglLeaveContext(PuglView* view, bool flush)
 		}
 #endif
 
-		glFlush();
 		if (view->impl->doubleBuffered) {
 			glXSwapBuffers(view->impl->display, view->impl->win);
 		}
