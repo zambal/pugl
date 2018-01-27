@@ -28,8 +28,11 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/keysym.h>
+#include <X11/extensions/xf86vmode.h>
 
 #ifdef PUGL_HAVE_GL
+#include <GL/glew.h>
+#include <GL/glxew.h>
 #include <GL/gl.h>
 #include <GL/glx.h>
 #endif
@@ -721,4 +724,35 @@ puglGetContext(PuglView* view)
 	}
 #endif
 	return NULL;
+}
+
+bool
+puglSetSwapInterval(PuglView* view, int interval) {
+	if (view->impl->doubleBuffered) {
+		if(GLXEW_EXT_swap_control) {
+			glXSwapIntervalEXT(view->impl->display, view->impl->win, interval);
+			return true;
+		}
+		else if(GLXEW_SGI_swap_control) {
+			glXSwapIntervalSGI(interval);
+			return true;
+		}
+		else if(GLXEW_MESA_swap_control) {
+			glXSwapIntervalMESA(interval);
+			return true;
+		}
+	}
+	return false;
+}
+
+
+int
+puglGetSwapInterval(PuglView* view) {
+	XF86VidModeModeLine mode_line;
+	int dot_clock;
+
+	if(!XF86VidModeGetModeLine(view->impl->display, view->impl->screen, &dot_clock, &mode_line))
+		return -1;
+
+	return (dot_clock * 1000) / (mode_line.htotal * mode_line.vtotal);
 }

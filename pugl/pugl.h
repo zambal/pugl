@@ -611,6 +611,19 @@ puglPostRedisplay(PuglView* view);
 PUGL_API void
 puglDestroy(PuglView* view);
 
+
+/**
+   Set swap interval
+*/
+PUGL_API bool
+puglSetSwapInterval(PuglView* view, int interval);
+
+/**
+   Get swap interval
+*/
+PUGL_API int
+puglGetSwapInterval(PuglView* view);
+
 /**
    @}
 */

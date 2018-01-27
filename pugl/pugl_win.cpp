@@ -20,6 +20,8 @@
 
 #include <windows.h>
 #include <windowsx.h>
+#include <GL/glew.h>
+#include <GL/wglew.h>
 #include <GL/gl.h>
 
 #include <stdio.h>
@@ -641,4 +643,21 @@ PuglNativeWindow
 puglGetNativeWindow(PuglView* view)
 {
 	return (PuglNativeWindow)view->impl->hwnd;
+}
+
+void
+puglSetSwapInterval(PuglView* view, int interval) {
+	if(WGLEW_EXT_swap_control) {
+		wglSwapIntervalEXT(interval);
+		return true;
+	}
+	return false;
+}
+
+int
+puglGetSwapInterval(PuglView* view) {
+	if(WGLEW_EXT_swap_control) {
+		return wglGetSwapIntervalEXT();
+	}
+	return -1;
 }
